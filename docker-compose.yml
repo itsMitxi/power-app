@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  # backend:
+  #   build: ./power-bff
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydatabase
+  #     SPRING_DATASOURCE_USERNAME: user
+  #     SPRING_DATASOURCE_PASSWORD: password
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - power-network
+
+  db:
+    image: mysql:latest
+    container_name: mysql-server
+    environment:
+      MYSQL_DATABASE: power-bff
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_PASSWORD: pass
+    ports:
+      - "3306:3306"
+    networks:
+      - power-network
+
+networks:
+  power-network:
