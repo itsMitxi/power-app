@@ -20,4 +20,9 @@ public class ApiEndpoints {
     public static final String USER_BY_ID = "/";
     public static final String USER_BY_USERNAME = "/username/";
 
+    // Exercises
+    public static final String EXERCISES_BASE = VERSION_1 + "/exercises";
+    public static final String EXERCISE_BY_ID = "/";
+    public static final String EXERCISE_BY_NAME = "/name/";
+
 }
