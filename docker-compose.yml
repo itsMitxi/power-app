@@ -22,6 +22,8 @@ services:
       MYSQL_PASSWORD: pass
     ports:
       - "3306:3306"
+    volumes:
+      - ../power-bff-data/mysql:/var/lib/mysql
     networks:
       - power-network
 
