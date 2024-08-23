@@ -1,11 +1,14 @@
 package com.example.powerbff.exercise;
 
 import com.example.powerbff.entity.Exercise;
+import com.example.powerbff.entity.User;
 import com.example.powerbff.repository.ExerciseRepository;
+import com.example.powerbff.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +18,8 @@ public class ExerciseRepositoryTests {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     public void shouldSaveAndDeleteExercise() {
@@ -52,28 +57,6 @@ public class ExerciseRepositoryTests {
 
         exerciseRepository.deleteById(oneExercise.get().getId());
         exerciseRepository.deleteById(anotherExercise.get().getId());
-    }
-
-    @Test
-    public void shouldNotCreateTwoExercisesWithSameName() {
-        Exercise exercise = new Exercise();
-        exercise.setName("sameName");
-        Exercise exercise1 = exerciseRepository.save(exercise);
-
-        exercise = new Exercise();
-        exercise.setName("sameName");
-        Exercise exercise2 = new Exercise();
-        try {
-            exercise2 = exerciseRepository.save(exercise);
-        } catch (Exception ignored) {}
-
-        Optional<Exercise> exerciseFound = exerciseRepository.findById(exercise1.getId());
-        assertThat(exerciseFound).isPresent();
-
-        exerciseFound = exerciseRepository.findById(exercise2.getId());
-        assertThat(exerciseFound).isNotPresent();
-
-        exerciseRepository.deleteById(exercise1.getId());
     }
 
     @Test
@@ -146,6 +129,84 @@ public class ExerciseRepositoryTests {
         assertThat(foundExercise.get().getImgUrl()).isEqualTo("imgurl2");
 
         exerciseRepository.deleteById(foundExercise.get().getId());
+    }
+
+    @Test
+    public void shouldFindAllExercisesOfUser() {
+        User user1 = new User();
+        user1.setUsername("user1");
+        User user2 = new User();
+        user2.setUsername("user2");
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Exercise exercise1 = new Exercise();
+        exercise1.setName("exercise1");
+        exerciseRepository.save(exercise1);
+
+        Exercise exercise2 = new Exercise();
+        exercise2.setName("exercise2");
+        exercise2.setCreatedBy(user1);
+        exerciseRepository.save(exercise2);
+
+        Exercise exercise3 = new Exercise();
+        exercise3.setName("exercise3");
+        exercise3.setCreatedBy(user2);
+        exerciseRepository.save(exercise3);
+
+        List<Exercise> exercisesUser1 = exerciseRepository.findByCreatedByIsNullOrCreatedBy(user1);
+        assertThat(exercisesUser1).isNotEmpty();
+        assertThat(exercisesUser1.stream().map(Exercise::getName)).containsExactlyInAnyOrder(exercise1.getName(), exercise2.getName());
+
+        userRepository.delete(user1);
+        userRepository.delete(user2);
+        exerciseRepository.delete(exercise1);
+        exerciseRepository.delete(exercise2);
+        exerciseRepository.delete(exercise3);
+    }
+
+    @Test
+    public void shouldFindAllExercisesOfUserByName() {
+        User user1 = new User();
+        user1.setUsername("user1");
+        User user2 = new User();
+        user2.setUsername("user2");
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        Exercise exercise1 = new Exercise();
+        exercise1.setName("exercise1");
+        exerciseRepository.save(exercise1);
+
+        Exercise exercise2 = new Exercise();
+        exercise2.setName("exercise1");
+        exercise2.setCreatedBy(user1);
+        exerciseRepository.save(exercise2);
+
+        Exercise exercise3 = new Exercise();
+        exercise3.setName("exercise2");
+        exercise3.setCreatedBy(user1);
+        exerciseRepository.save(exercise3);
+
+        Exercise exercise4 = new Exercise();
+        exercise4.setName("exercise2");
+        exercise4.setCreatedBy(user2);
+        exerciseRepository.save(exercise4);
+
+        List<Exercise> exercisesUser1 = exerciseRepository.findByNameContainsAndCreatedByIsNullOrCreatedBy("exercise1", user1);
+        assertThat(exercisesUser1).isNotEmpty();
+        assertThat(exercisesUser1.stream().map(Exercise::getName)).containsExactlyInAnyOrder("exercise1", "exercise1");
+
+        exercisesUser1 = exerciseRepository.findByNameContainsAndCreatedByIsNullOrCreatedBy("exercise2", user1);
+        assertThat(exercisesUser1).isNotEmpty();
+        assertThat(exercisesUser1.stream().map(Exercise::getName)).containsExactlyInAnyOrder("exercise2");
+
+        userRepository.delete(user1);
+        userRepository.delete(user2);
+        exerciseRepository.delete(exercise1);
+        exerciseRepository.delete(exercise2);
+        exerciseRepository.delete(exercise3);
+        exerciseRepository.delete(exercise4);
     }
 
 }
