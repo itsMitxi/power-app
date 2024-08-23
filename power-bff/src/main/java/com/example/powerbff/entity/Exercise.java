@@ -11,7 +11,10 @@ public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+    @Column(nullable = false)
     private String name;
     private String description;
     private String imgUrl;
