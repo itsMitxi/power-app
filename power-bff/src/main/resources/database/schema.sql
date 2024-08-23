@@ -8,11 +8,20 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE exercise_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL
+);
+
 CREATE TABLE exercises (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,
+    created_by INT,
+    name VARCHAR(255) NOT NULL,
+    type INT,
     description TEXT,
-    img_url VARCHAR(255)
+    img_url VARCHAR(255),
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (type) REFERENCES exercise_types(id) ON DELETE CASCADE
 );
 
 CREATE TABLE muscle_groups (
