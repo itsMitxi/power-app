@@ -31,4 +31,9 @@ public class ApiEndpoints {
     public static final String EXERCISE_TYPE_BY_ID = "/";
     public static final String EXERCISE_TYPE_BY_NAME = "/name/";
 
+    // Muscle groups
+    public static final String MUSCLE_GROUPS_BASE = VERSION + "/muscle-groups";
+    public static final String MUSCLE_GROUP_BY_ID = "/";
+    public static final String MUSCLE_GROUP_BY_NAME = "/name/";
+
 }
