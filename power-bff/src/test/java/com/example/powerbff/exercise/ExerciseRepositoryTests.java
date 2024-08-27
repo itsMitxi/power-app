@@ -1,8 +1,10 @@
 package com.example.powerbff.exercise;
 
 import com.example.powerbff.entity.Exercise;
+import com.example.powerbff.entity.ExerciseType;
 import com.example.powerbff.entity.User;
 import com.example.powerbff.repository.ExerciseRepository;
+import com.example.powerbff.repository.ExerciseTypeRepository;
 import com.example.powerbff.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ public class ExerciseRepositoryTests {
     private ExerciseRepository exerciseRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ExerciseTypeRepository exerciseTypeRepository;
 
     @Test
     public void shouldSaveAndDeleteExercise() {
@@ -203,6 +207,63 @@ public class ExerciseRepositoryTests {
 
         userRepository.delete(user1);
         userRepository.delete(user2);
+        exerciseRepository.delete(exercise1);
+        exerciseRepository.delete(exercise2);
+        exerciseRepository.delete(exercise3);
+        exerciseRepository.delete(exercise4);
+    }
+
+    @Test
+    public void shouldFindAllExercisesOfUserByType() {
+        User user1 = new User();
+        user1.setUsername("user1");
+        User user2 = new User();
+        user2.setUsername("user2");
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        ExerciseType exerciseType1 = new ExerciseType();
+        exerciseType1.setName("exerciseType1");
+        ExerciseType exerciseType2 = new ExerciseType();
+        exerciseType2.setName("exerciseType2");
+        exerciseTypeRepository.save(exerciseType1);
+        exerciseTypeRepository.save(exerciseType2);
+
+        Exercise exercise1 = new Exercise();
+        exercise1.setName("exerciseType1");
+        exercise1.setType(exerciseType1);
+        exerciseRepository.save(exercise1);
+
+        Exercise exercise2 = new Exercise();
+        exercise2.setName("exerciseType1");
+        exercise2.setCreatedBy(user1);
+        exercise2.setType(exerciseType1);
+        exerciseRepository.save(exercise2);
+
+        Exercise exercise3 = new Exercise();
+        exercise3.setName("exerciseType2");
+        exercise3.setCreatedBy(user1);
+        exercise3.setType(exerciseType2);
+        exerciseRepository.save(exercise3);
+
+        Exercise exercise4 = new Exercise();
+        exercise4.setName("exerciseType1");
+        exercise4.setCreatedBy(user2);
+        exercise4.setType(exerciseType1);
+        exerciseRepository.save(exercise4);
+
+        List<Exercise> exercisesUser1 = exerciseRepository.findByTypeAndCreatedByIsNullOrCreatedBy(exerciseType1, user1);
+        assertThat(exercisesUser1).isNotEmpty();
+        assertThat(exercisesUser1.stream().map(Exercise::getName)).containsExactlyInAnyOrder("exerciseType1", "exerciseType1");
+
+        exercisesUser1 = exerciseRepository.findByTypeAndCreatedByIsNullOrCreatedBy(exerciseType2, user1);
+        assertThat(exercisesUser1).isNotEmpty();
+        assertThat(exercisesUser1.stream().map(Exercise::getName)).containsExactlyInAnyOrder("exerciseType2");
+
+        userRepository.delete(user1);
+        userRepository.delete(user2);
+        exerciseTypeRepository.delete(exerciseType1);
+        exerciseTypeRepository.delete(exerciseType2);
         exerciseRepository.delete(exercise1);
         exerciseRepository.delete(exercise2);
         exerciseRepository.delete(exercise3);
