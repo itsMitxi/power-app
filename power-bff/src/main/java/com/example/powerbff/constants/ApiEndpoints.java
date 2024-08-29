@@ -49,4 +49,9 @@ public class ApiEndpoints {
     public static final String WORKOUTS_BY_DATE = "/date/";
     public static final String WORKOUTS_BETWEEN_DATES = "/dates";
 
+    // Set types
+    public static final String SET_TYPES_BASE = VERSION + "/set-types";
+    public static final String SET_TYPE_BY_ID = "/";
+    public static final String SET_TYPE_BY_NAME = "/name/";
+
 }
