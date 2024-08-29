@@ -1,28 +1,44 @@
 package com.example.powerbff.service;
 
-import com.example.powerbff.entity.Exercise;
+import com.example.powerbff.entity.*;
 import com.example.powerbff.exception.exercise.*;
-import com.example.powerbff.repository.ExerciseRepository;
+import com.example.powerbff.exception.muscle.MuscleNotFoundException;
+import com.example.powerbff.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ExerciseService {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
+    @Autowired
+    private MuscleRepository muscleRepository;
+    @Autowired
+    private ExerciseTypeRepository exerciseTypeRepository;
 
-    public Exercise createExercise(Exercise exercise) throws NameAlreadyExistsException, BlankNameException {
+    public Exercise createExercise(Exercise exercise) throws NameAlreadyExistsException, BlankNameException, MuscleNotFoundException, ExerciseTypeNotFoundException {
         if (exercise.getName() == null || exercise.getName().isEmpty()) {
             throw new BlankNameException();
         } else if (exerciseRepository.existsByName(exercise.getName())) {
             throw new NameAlreadyExistsException(exercise.getName());
         }
+        if (!exercise.getMuscles().isEmpty()) {
+            Set<Muscle> muscles = new HashSet<>();
+            for (Muscle muscle : exercise.getMuscles()) {
+                Muscle muscleFound = muscleRepository.findByName(muscle.getName()).orElseThrow(() -> new MuscleNotFoundException(muscle.getName()));
+                muscles.add(muscleFound);
+            }
+            exercise.setMuscles(muscles);
+        }
+        if (!Objects.equals(exercise.getType(), null)) {
+            ExerciseType exerciseType = exerciseTypeRepository.findByName(exercise.getType().getName()).orElseThrow(() -> new ExerciseTypeNotFoundException(exercise.getType().getName()));
+            exercise.setType(exerciseType);
+        }
+
         return exerciseRepository.save(exercise);
     }
 
@@ -39,7 +55,7 @@ public class ExerciseService {
     }
 
     @Transactional
-    public Exercise updateExercise(Long id, Exercise exerciseDetails) throws ExerciseNotFoundException, NameAlreadyExistsException {
+    public Exercise updateExercise(Long id, Exercise exerciseDetails) throws ExerciseNotFoundException, NameAlreadyExistsException, MuscleNotFoundException, ExerciseTypeNotFoundException {
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new ExerciseNotFoundException(id));
 
         if (!Objects.equals(exerciseDetails.getName(), "") && !Objects.equals(exerciseDetails.getName(), null)) {
@@ -52,6 +68,18 @@ public class ExerciseService {
             exercise.setDescription(exerciseDetails.getDescription());
         if (!Objects.equals(exerciseDetails.getImgUrl(), "") && !Objects.equals(exerciseDetails.getImgUrl(), null))
             exercise.setImgUrl(exerciseDetails.getImgUrl());
+        if (!exerciseDetails.getMuscles().isEmpty()) {
+            Set<Muscle> muscles = new HashSet<>();
+            for (Muscle muscle : exerciseDetails.getMuscles()) {
+                Muscle muscleFound = muscleRepository.findByName(muscle.getName()).orElseThrow(() -> new MuscleNotFoundException(muscle.getName()));
+                muscles.add(muscleFound);
+            }
+            exercise.setMuscles(muscles);
+        }
+        if (!Objects.equals(exercise.getType(), null)) {
+            ExerciseType exerciseType = exerciseTypeRepository.findByName(exercise.getType().getName()).orElseThrow(() -> new ExerciseTypeNotFoundException(exercise.getType().getName()));
+            exercise.setType(exerciseType);
+        }
 
         return exerciseRepository.save(exercise);
     }
