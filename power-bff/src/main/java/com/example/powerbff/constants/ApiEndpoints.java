@@ -42,4 +42,11 @@ public class ApiEndpoints {
     public static final String MUSCLE_BY_NAME = "/name/";
     public static final String MUSCLES_BY_MUSCLE_GROUP = "/group/";
 
+    // Workouts
+    public static final String WORKOUTS_BASE = VERSION + "/workouts";
+    public static final String WORKOUT_BY_ID = "/";
+    public static final String WORKOUTS_BY_USER = "/user/";
+    public static final String WORKOUTS_BY_DATE = "/date/";
+    public static final String WORKOUTS_BETWEEN_DATES = "/dates";
+
 }
