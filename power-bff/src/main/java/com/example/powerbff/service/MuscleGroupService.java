@@ -72,7 +72,8 @@ public class MuscleGroupService {
                 throw new NameAlreadyExistsException(muscleGroup.getName());
             }
             muscleGroup.setName(muscleGroupDetails.getName());
-        } else if (!Objects.equals(muscleGroupDetails.getColor(), "") && !Objects.equals(muscleGroupDetails.getColor(), null)) {
+        }
+        if (!Objects.equals(muscleGroupDetails.getColor(), "") && !Objects.equals(muscleGroupDetails.getColor(), null)) {
             if (muscleGroupDetails.getColor().length() > 7) {
                 throw new ColorTooLongException(muscleGroupDetails.getColor());
             } else if (this.muscleGroupRepository.existsByColor(muscleGroupDetails.getColor())) {

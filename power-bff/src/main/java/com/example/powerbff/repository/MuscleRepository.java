@@ -15,6 +15,6 @@ public interface MuscleRepository extends JpaRepository<Muscle, Long> {
 
     Optional<Muscle> findByName(String name);
 
-    List<Muscle> findAllByMuscleGroup(MuscleGroup muscleGroup);
+    List<Muscle> findByMuscleGroup(MuscleGroup muscleGroup);
 
 }
