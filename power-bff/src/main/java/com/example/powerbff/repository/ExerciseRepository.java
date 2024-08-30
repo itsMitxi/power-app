@@ -18,6 +18,8 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     Optional<Exercise> findByName(String name);
 
+    Optional<Exercise> findByNameAndType(String name, ExerciseType type);
+
     List<Exercise> findByCreatedByIsNullOrCreatedBy(User user);
 
     @Query("SELECT e FROM Exercise e WHERE e.name LIKE %:name% AND (e.createdBy IS NULL OR e.createdBy = :user)")

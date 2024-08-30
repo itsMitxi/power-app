@@ -54,4 +54,9 @@ public class ApiEndpoints {
     public static final String SET_TYPE_BY_ID = "/";
     public static final String SET_TYPE_BY_NAME = "/name/";
 
+    // Sets
+    public static final String SETS_BASE = VERSION + "/sets";
+    public static final String SET_BY_ID = "/";
+    public static final String SETS_BY_WORKOUT = "/workout/";
+
 }
