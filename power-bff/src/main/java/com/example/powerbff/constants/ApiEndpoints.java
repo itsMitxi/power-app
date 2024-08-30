@@ -59,4 +59,9 @@ public class ApiEndpoints {
     public static final String SET_BY_ID = "/";
     public static final String SETS_BY_WORKOUT = "/workout/";
 
+    // Dropsets
+    public static final String DROPSETS_BASE = VERSION + "/dropsets";
+    public static final String DROPSET_BY_ID = "/";
+    public static final String DROPSET_BY_SET = "/set/";
+
 }
