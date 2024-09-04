@@ -1,17 +1,4 @@
-version: '3.8'
 services:
-  # backend:
-  #   build: ./power-bff
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydatabase
-  #     SPRING_DATASOURCE_USERNAME: user
-  #     SPRING_DATASOURCE_PASSWORD: password
-  #   depends_on:
-  #     - db
-  #   networks:
-  #     - power-network
 
   db:
     image: mysql:latest
@@ -26,6 +13,25 @@ services:
       - ../power-bff-data/mysql:/var/lib/mysql
     networks:
       - power-network
+
+  backend:
+    image: openjdk:21-jdk-slim
+    container_name: power-bff
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/power-bff
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: pass
+    depends_on:
+      - db
+    volumes:
+      - ./power-bff:/app
+      - ~/.gradle:/home/gradle/.gradle
+    working_dir: /app
+    networks:
+      - power-network
+    command: ./gradlew bootRun 
 
 networks:
   power-network:
